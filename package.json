@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-unlimited-fallback-agent",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "An n8n custom node for AI Agent that supports unlimited fallback language models.",
 	"license": "MIT",
 	"homepage": "",
