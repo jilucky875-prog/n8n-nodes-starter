@@ -16,7 +16,6 @@ export class UnlimitedFallbackAgent implements INodeType {
 		defaults: {
 			name: 'Unlimited AI Agent',
 		},
-		// TS Error Fix 1: Removed 'name' property from inputs, n8n relies on 'type'
 		inputs: [
 			{
 				displayName: 'Chat Models (Primary + Infinite Fallbacks)',
@@ -55,7 +54,6 @@ export class UnlimitedFallbackAgent implements INodeType {
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			const prompt = this.getNodeParameter('prompt', itemIndex) as string;
 			
-			// TS Error Fix 2: Added 'await' and casted as 'any[]' because it returns a Promise
 			const connectedModels = (await this.getInputConnectionData('ai_languageModel', itemIndex)) as any[];
 
 			if (!connectedModels || !Array.isArray(connectedModels) || connectedModels.length === 0) {
@@ -66,12 +64,10 @@ export class UnlimitedFallbackAgent implements INodeType {
 			let isSuccess = false;
 			let errorLogs: string[] = []; 
 
-			// CORE LOGIC: Sequential Fallback Loop
 			for (let i = 0; i < connectedModels.length; i++) {
 				try {
 					const currentModel = connectedModels[i];
 					
-					// REAL AI EXECUTION LOGIC:
 					if (currentModel && typeof currentModel.invoke === 'function') {
 						const response = await currentModel.invoke(prompt);
 						finalOutput = response?.content || response;
@@ -86,17 +82,15 @@ export class UnlimitedFallbackAgent implements INodeType {
 					}
 					
 					isSuccess = true;
-					break; // Success milte hi loop break
+					break; 
 
 				} catch (error: any) {
-					// Agar fail hua, error log karo aur aage badho
 					const errorMsg = `Model ${i} failed due to: ${error.message || 'Unknown Error'}`;
 					errorLogs.push(errorMsg);
 					continue; 
 				}
 			}
 
-			// Agar saare models fail ho gaye
 			if (!isSuccess) {
 				const combinedErrors = errorLogs.join(' | ');
 				throw new Error(`CRITICAL FAILURE: All ${connectedModels.length} connected models failed. Error Trace: ${combinedErrors}`);
