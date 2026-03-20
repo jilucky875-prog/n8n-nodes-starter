@@ -16,23 +16,21 @@ export class UnlimitedFallbackAgent implements INodeType {
 		defaults: {
 			name: 'Unlimited AI Agent',
 		},
+		// TS Error Fix 1: Removed 'name' property from inputs, n8n relies on 'type'
 		inputs: [
 			{
 				displayName: 'Chat Models (Primary + Infinite Fallbacks)',
-				name: 'ai_languageModel',
 				type: 'ai_languageModel',
 				required: true,
 				maxConnections: -1, 
 			},
 			{
 				displayName: 'Memory (Optional)',
-				name: 'ai_memory',
 				type: 'ai_memory',
 				maxConnections: 1,
 			},
 			{
 				displayName: 'Tools (Optional)',
-				name: 'ai_tool',
 				type: 'ai_tool',
 				maxConnections: -1, 
 			},
@@ -56,9 +54,11 @@ export class UnlimitedFallbackAgent implements INodeType {
 
 		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
 			const prompt = this.getNodeParameter('prompt', itemIndex) as string;
-			const connectedModels = this.getInputConnectionData('ai_languageModel', itemIndex);
+			
+			// TS Error Fix 2: Added 'await' and casted as 'any[]' because it returns a Promise
+			const connectedModels = (await this.getInputConnectionData('ai_languageModel', itemIndex)) as any[];
 
-			if (!connectedModels || connectedModels.length === 0) {
+			if (!connectedModels || !Array.isArray(connectedModels) || connectedModels.length === 0) {
 				throw new Error('Node Error: Please connect at least one language model.');
 			}
 
@@ -69,12 +69,9 @@ export class UnlimitedFallbackAgent implements INodeType {
 			// CORE LOGIC: Sequential Fallback Loop
 			for (let i = 0; i < connectedModels.length; i++) {
 				try {
-					// n8n returns the initialized Langchain model instance here
-					const currentModel = connectedModels[i] as any; 
+					const currentModel = connectedModels[i];
 					
 					// REAL AI EXECUTION LOGIC:
-					// Depending on the Langchain version and model type n8n uses, 
-					// we try the standard execution methods.
 					if (currentModel && typeof currentModel.invoke === 'function') {
 						const response = await currentModel.invoke(prompt);
 						finalOutput = response?.content || response;
