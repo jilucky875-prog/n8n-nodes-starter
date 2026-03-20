@@ -12,16 +12,17 @@ export class UnlimitedFallbackAgent implements INodeType {
 		icon: 'fa:robot', 
 		group: ['transform'],
 		version: 1,
-		description: 'AI Agent that supports unlimited fallback language models',
+		description: 'AI Agent that supports up to 50 fallback language models',
 		defaults: {
 			name: 'Unlimited AI Agent',
 		},
 		inputs: [
+			'main', // <--- YAHAN FIX KIYA HAI: Ye likhne se left side ka '+' connector wapas aa jayega!
 			{
-				displayName: 'Chat Models (Primary + Infinite Fallbacks)',
+				displayName: 'Chat Models (Primary + Fallbacks)',
 				type: 'ai_languageModel',
 				required: true,
-				maxConnections: -1, 
+				maxConnections: 50, // <--- YAHAN FIX KIYA HAI: -1 ko 50 kiya taaki math validation fail na ho
 			},
 			{
 				displayName: 'Memory (Optional)',
@@ -31,7 +32,7 @@ export class UnlimitedFallbackAgent implements INodeType {
 			{
 				displayName: 'Tools (Optional)',
 				type: 'ai_tool',
-				maxConnections: -1, 
+				maxConnections: 50, 
 			},
 		],
 		outputs: ['main'],
