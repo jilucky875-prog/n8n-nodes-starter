@@ -1,15 +1,13 @@
 {
 	"name": "n8n-nodes-unlimited-fallback-agent",
 	"version": "1.0.2",
-	"description": "A Gateway node for n8n AI Agent to support unlimited fallback chat models with Tool and Memory support.",
+	"description": "Gateway node for n8n AI Agent v3.1+ to support unlimited fallbacks with Tools & Memory.",
 	"license": "MIT",
 	"keywords": [
 		"n8n-community-node-package",
 		"n8n",
-		"langchain",
-		"ai-agent",
-		"fallback",
-		"gateway"
+		"ai-gateway",
+		"fallback-llm"
 	],
 	"author": {
 		"name": "Nexus Automation"
@@ -17,9 +15,6 @@
 	"scripts": {
 		"build": "n8n-node build",
 		"build:watch": "tsc --watch",
-		"dev": "n8n-node dev",
-		"lint": "n8n-node lint",
-		"lint:fix": "n8n-node lint --fix",
 		"release": "n8n-node release"
 	},
 	"files": [
@@ -28,7 +23,6 @@
 	"n8n": {
 		"n8nNodesApiVersion": 1,
 		"strict": true,
-		"credentials": [],
 		"nodes": [
 			"dist/nodes/UnlimitedFallbackModel.node.js"
 		]
